@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watching Grass Grow</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#e1ffff">
+  <meta name="theme-color" content="#ffffff">
+    <style>
+        /* Center the image container */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #e1ffff; /* Light background color */
+        }
+
+        /* Logo styling */
+        #logo {
+            margin-top: 20px; /* Spacing above the logo */
+            width: 200px; /* Fixed width for the logo */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 15px; /* Rounded corners for the logo */
+        }
+
+        /* Image styling */
+        #webcam {
+            border-radius: 7px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+            max-width: 90%; /* Responsive width */
+            height: auto; /* Maintain aspect ratio */
+            margin-top: 25px; /* Spacing between logo and webcam */
+        }
+    </style>
+</head>
+<body>
+    <!-- Display message if JavaScript is disabled -->
+    <noscript>
+    <br>
+    ********** &nbsp; You MUST enable Javascript for auto-refreshes of the grass growing webcam &nbsp; **********
+    <br>
+    </noscript>
+
+    <!-- Logo Image -->
+    <img src="logo.png" alt="Website Logo" id="logo">
+
+    <!-- Webcam Image -->
+    <img alt="grass webcam" title="grass webcam" src="https://webcama1.watching-grass-grow.com/current.jpg" id="webcam">
+
+    <script>
+        // Configuration variables
+        var view = "newgrass"; 
+        var ts = 1000;         // interval spacing in milliseconds
+        var tsrandom = 20;     // random interval in milliseconds
+        var timecount = 0;
+        var timeend = 9.797693134862319E+999;  // Total duration before ending refresh
+        var imageoffline = "/webcam-offline.png";
+        var imagenewgrass = "https://webcama1.watching-grass-grow.com/current.jpg";
+        var imageoldgrass = "https://webcama2.watching-grass-grow.com/current.jpg";
+        var image = imagenewgrass;
+
+        // Refresh the webcam image
+        function RefreshImage() {
+            timecount += ts;
+            var tsrand = Math.floor(tsrandom * Math.random());
+            var tmp = new Date();
+            tmp = "?wgg" + tmp.getTime(); 
+
+            // Switch images based on view
+            if (view === "alternate") {
+                image = (image === imageoldgrass) ? imagenewgrass : imageoldgrass;
+            } else if (view === "oldgrass") {
+                image = imageoldgrass;
+            } else if (view === "newgrass") {
+                image = imagenewgrass;
+            } else {
+                view = "grass";
+                image = imageoldgrass;
+            }
+
+            // End refresh with a specific image if timecount exceeds timeend
+            if (timecount > timeend) {
+                image = "https://webcama1.watching-grass-grow.com/mow-lawn-break.jpg";
+                ts = timeend;
+            }
+
+            // Update the image source to force reload
+            document.getElementById("webcam").src = image + tmp; 
+            setTimeout(RefreshImage, (ts + tsrand));
+        }
+
+        // Start refreshing
+        function Start() {
+            setTimeout(RefreshImage, 500);
+        }
+
+        // Change view to alternate
+        function alternatewebcam() {
+            view = "alternate";
+        }
+
+        // Change view to oldgrass
+        function oldgrasswebcam() {
+            view = "oldgrass";
+        }
+
+        // Change view to newgrass
+        function newgrasswebcam() {
+            view = "newgrass";
+        }
+
+        // Start the auto-refresh on page load
+        Start();
+
+        // Make the image size dynamic based on device size
+        function resizeImage() {
+            var img = document.getElementById('webcam');
+            if (window.innerWidth < 600) {
+                img.style.width = '100%';
+                img.style.height = 'auto';
+            } else if (window.innerWidth >= 600 && window.innerWidth <= 1200) {
+                img.style.width = '75%';
+                img.style.height = 'auto';
+            } else {
+                img.style.width = '50%';
+                img.style.height = 'auto';
+            }
+        }
+
+        // Resize image on load and on window resize
+        window.onload = resizeImage;
+        window.onresize = resizeImage;
+    </script>
+</body>
+</html>
+
